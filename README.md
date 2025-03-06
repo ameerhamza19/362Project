@@ -71,16 +71,4 @@ This project implements a multiplayer trivia game, inspired by *Who Wants to Be 
 
 ---
 ## How to Run the Project
-1. Flash the firmware onto both STM32 microcontrollers.
-2. Connect the hardware as per the schematic.
-3. Power up the system and follow on-screen prompts to configure the game.
-4. Players input answers using the keypad while the seven-segment display tracks the timer.
-
-### Future Improvements
-- Adding wireless connectivity for remote play.
-- Expanding the question database for a more diverse game experience.
-- Enhancing UI elements on TFT LCD for better user interaction.
-
-### License
-This project is open-source under the **MIT License**. Feel free to modify and expand upon it!
-
+1. Find out April 1st!
