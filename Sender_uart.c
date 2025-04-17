@@ -88,17 +88,14 @@ char Keypad_Scan(void) {
 }
 
 void UART2_Transmit(char c) {
-    while (!(USART2->ISR & USART_ISR_TXE)); // Wait for TX empty
-    USART2->TDR = c; // Send character
-    while (!(USART2->ISR & USART_ISR_TC)); // Wait for transmission complete
+    while (!(USART2->ISR & USART_ISR_TXE)); // TX empty
+    USART2->TDR = c; // Send 
+    while (!(USART2->ISR & USART_ISR_TC)); // Wait for transmission 
 }
 
 void SystemClock_Config(void) {
-    // Configure HSI clock (8 MHz default for STM32F0)
     RCC->CR |= RCC_CR_HSION;
     while (!(RCC->CR & RCC_CR_HSIRDY));
-
-    // Set HCLK = PCLK1 = PCLK2 = 8 MHz
     RCC->CFGR &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE);
 }
 
@@ -106,25 +103,22 @@ void GPIO_Init(void) {
     // Enable GPIOC clock for keypad
     RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
 
-    // Enable GPIOA clock for UART2 (PA2)
+    //  GPIOA clock for UART2 
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-    // Configure PA2 as UART2 TX (AF1)
-    GPIOA->MODER |= (2UL << (2 * 2)); // Alternate function
+    //  PA2 as UART2 TX (AF1)
+    GPIOA->MODER |= (2UL << (2 * 2)); // Af
     GPIOA->AFR[0] |= (1UL << (4 * 2)); // AF1 for PA2
 }
 
 void UART2_Init(void) {
-    // Enable UART2 clock
     RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
-
-    // Configure UART2: 9600 baud, 8N1
-    USART2->BRR = 8000000 / 9600; // 8 MHz / 9600
+    USART2->BRR = 8000000 / 9600;
     USART2->CR1 = USART_CR1_TE | USART_CR1_UE; // Enable TX, UART
 }
 
 void Delay_ms(uint32_t ms) {
-    // Simple delay for 8 MHz clock (approximate)
+    // Simple delay 
     for (uint32_t i = 0; i < ms * 8000 / 4; i++) {
         __NOP();
     }
