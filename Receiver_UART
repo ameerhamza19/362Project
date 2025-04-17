@@ -29,11 +29,9 @@ char UART2_Receive(void) {
 }
 
 void SystemClock_Config(void) {
-    // Configure HSI clock (8 MHz default for STM32F0)
     RCC->CR |= RCC_CR_HSION;
     while (!(RCC->CR & RCC_CR_HSIRDY));
 
-    // Set HCLK = PCLK1 = PCLK2 = 8 MHz
     RCC->CFGR &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE);
 }
 
