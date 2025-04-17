@@ -1,0 +1,69 @@
+#include "stm32f0xx.h"
+
+void SystemClock_Config(void);
+void GPIO_Init(void);
+void UART2_Init(void);
+char UART2_Receive(void);
+void Delay_ms(uint32_t ms);
+
+int main(void) {
+    SystemClock_Config();
+    GPIO_Init();
+    UART2_Init();
+
+    char received_char;
+    while (1) {
+        received_char = UART2_Receive();
+        if (received_char != '\0') {
+            GPIOB->ODR ^= GPIO_PIN_0; // Toggle LED
+            Delay_ms(200); // Visual feedback
+        }
+    }
+}
+
+char UART2_Receive(void) {
+    if (USART2->ISR & USART_ISR_RXNE) {
+        return (char)(USART2->RDR); // Read received character
+    }
+    return '\0'; // No data
+}
+
+void SystemClock_Config(void) {
+    // Configure HSI clock (8 MHz default for STM32F0)
+    RCC->CR |= RCC_CR_HSION;
+    while (!(RCC->CR & RCC_CR_HSIRDY));
+
+    // Set HCLK = PCLK1 = PCLK2 = 8 MHz
+    RCC->CFGR &= ~(RCC_CFGR_HPRE | RCC_CFGR_PPRE);
+}
+
+void GPIO_Init(void) {
+    // Enable GPIOB clock for LED
+    RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
+
+    // Configure PB0 as output
+    GPIOB->MODER |= (1UL << (2 * 0));
+
+    // Enable GPIOA clock for UART2 (PA3)
+    RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+
+    // Configure PA3 as UART2 RX (AF1)
+    GPIOA->MODER |= (2UL << (2 * 3)); // Alternate function
+    GPIOA->AFR[0] |= (1UL << (4 * 3)); // AF1 for PA3
+}
+
+void UART2_Init(void) {
+    // Enable UART2 clock
+    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+
+    // Configure UART2: 9600 baud, 8N1
+    USART2->BRR = 8000000 / 9600; // 8 MHz / 9600
+    USART2->CR1 = USART_CR1_RE | USART_CR1_UE; // Enable RX, UART
+}
+
+void Delay_ms(uint32_t ms) {
+    // Simple delay for 8 MHz clock (approximate)
+    for (uint32_t i = 0; i < ms * 8000 / 4; i++) {
+        __NOP();
+    }
+}
