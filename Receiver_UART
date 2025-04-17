@@ -42,10 +42,9 @@ void GPIO_Init(void) {
     // Configure PB0 as output
     GPIOB->MODER |= (1UL << (2 * 0));
 
-    // Enable GPIOA clock for UART2 (PA3)
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-    // Configure PA3 as UART2 RX (AF1)
+    //  PA3 as UART2 RX (AF1)
     GPIOA->MODER |= (2UL << (2 * 3)); // Alternate function
     GPIOA->AFR[0] |= (1UL << (4 * 3)); // AF1 for PA3
 }
@@ -54,13 +53,12 @@ void UART2_Init(void) {
     // Enable UART2 clock
     RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 
-    // Configure UART2: 9600 baud, 8N1
     USART2->BRR = 8000000 / 9600; // 8 MHz / 9600
     USART2->CR1 = USART_CR1_RE | USART_CR1_UE; // Enable RX, UART
 }
 
 void Delay_ms(uint32_t ms) {
-    // Simple delay for 8 MHz clock (approximate)
+    // Simple delay  clock
     for (uint32_t i = 0; i < ms * 8000 / 4; i++) {
         __NOP();
     }
