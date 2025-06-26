@@ -20,7 +20,7 @@ int main(void) {
     while (1) {
         received_data = SPI1_Slave_Receive();
 //Any processing goes here
-    }
+    } 
 }
 
 uint8_t SPI1_Slave_Receive(void) {
